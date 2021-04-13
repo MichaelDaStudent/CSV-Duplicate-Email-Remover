@@ -52,8 +52,9 @@ public class CSVDuplicateEmailRemover
 	    else
 	    {
 	    	CSV CSVInput = new CSV(input);
-	    	System.out.println("Duplicate-Free CSV: " + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
-			System.out.println("Removed Values: " + CSVInput.toString(CSVInput.getRemovedValuesArrayList()) + "\n");
+	    	// System.out.println("Original Values:\n" + CSVInput.toReadableString(CSVInput.toArrayList(CSVInput.getStringCSV())));
+	    	System.out.println("Duplicate-Free CSV:\n" + CSVInput.toReadableString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
+			System.out.println("Removed Values:\n" + CSVInput.toReadableString(CSVInput.getRemovedValuesArrayList()) + "\n");
 	    }	
 	    
 	    Scanner.close();
