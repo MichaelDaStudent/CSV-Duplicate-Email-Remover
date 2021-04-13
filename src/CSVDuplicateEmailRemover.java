@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.*;
 
 public class CSVDuplicateEmailRemover 
@@ -7,15 +6,15 @@ public class CSVDuplicateEmailRemover
 	{
 		/*
 			How to Use:
-			
+
 			When running CSVDuplicateEmailRemover, you will be prompted to enter "custom" or a CSV.
 			Entering a CSV will produce a CSV with duplicate values removed, and a CSV of the values removed.
 			Entering custom will prompt you to enter in a pair of booleans, one for Show Removed Values and one for Table Format.
 			The default it true,false meaning it WILL Show Removed Values and WILL NOT present in Table Format.
 			Standard format returns a CSV while table format shows each value with a line break in between.
-			Uncommenting line 67
+			Uncommenting line 67 (CSVDuplicateEmailRemover.java:67) will allow the option to return the original CSV in Table Format.
 		*/
-		
+
 		Scanner Scanner = new Scanner(System.in);  // Create a Scanner object
 	    System.out.println("Enter \"custom\" for Custom Layout or a CSV for a Standard Layout:");
 	    String input = Scanner.nextLine();
@@ -64,7 +63,7 @@ public class CSVDuplicateEmailRemover
 	    else
 	    {
 	    	CSV CSVInput = new CSV(input);
-	    	Uncomment for table with original values: System.out.println("Original Values:\n" + CSVInput.toReadableString(CSVInput.toArrayList(CSVInput.getStringCSV())));
+	    	// Uncomment for table with original values: System.out.println("Original Values:\n" + CSVInput.toReadableString(CSVInput.toArrayList(CSVInput.getStringCSV())));
 	    	System.out.println("Duplicate-Free CSV:\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
 			System.out.println("Removed Values:\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()) + "\n");
 	    }	
