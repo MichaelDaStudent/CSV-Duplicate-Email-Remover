@@ -1,6 +1,7 @@
 # CSV-Duplicate-Email-Remover
 CSV Duplicate Email Remover can remove any duplicates in a CSV of any type, and return the resulting CSV and removed values in both a CSV and a table.
 
+
 How to Use:
 
 When running CSVDuplicateEmailRemover, you will be prompted to enter "custom" or a CSV.
