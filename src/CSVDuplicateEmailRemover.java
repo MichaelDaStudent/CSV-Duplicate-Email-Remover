@@ -6,14 +6,18 @@ import javax.swing.*;
 
 public class CSVDuplicateEmailRemover 
 {
+    static String defaultLayout = "ttt";
+    
 	public static void main(String[] args)
 	{
 		/*
 			How to Use:
 			
-			When running CSVDuplicateEmailRemover, you will be prompted to enter in a CSV (with standard layout "ttf"),
+			When running CSVDuplicateEmailRemover, you will be prompted to enter in a CSV (with the default layout),
 			a series of 3 letters in the form of "t" or "f" (for true and false) to create a custom layouts,
 			or a single "f" to be able to input a .CSV file.
+			
+			The default layout can be changed with the variable "defaultLayout".
 			
 			If you are trying to copy and paste a list-style CSV file (one seperated with line breaks instead of commas),
 			go to https://www.gillmeister-software.com/online-tools/text/remove-line-breaks.aspx and paste in the list-style CSV.
@@ -21,7 +25,7 @@ public class CSVDuplicateEmailRemover
 			
 			A custom layout has the option to turn on and off Show Input CSV, Show Removed Values, and Show in Table Format.
 			To do this, enter in three consecutive letters, with no spaces between, of either t or f (for true and false).
-			The default layout that appears when directly entering in a CSV is "ttf".
+			The default layout that appears when directly entering in a CSV is set through the variable defaultLayout.
 			
 			When entering in "f", a file explorer will open. The default directory is set to downloads.
 			In order to sort by most recent, click once on the icon "Details" in the top right, which has 2 squares and 2 lines.
@@ -29,7 +33,7 @@ public class CSVDuplicateEmailRemover
 		*/
 			
 		Scanner Scanner = new Scanner(System.in);
-		System.out.println("Enter a CSV for Default Layout (Default is \"ttf\")| \"f\" to select a .CSV or .TXT file | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
+		System.out.println("Enter a CSV for Default Layout (Default is \"" + defaultLayout + "\")| \"f\" to select a .CSV or .TXT file | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
 	    String initialInput = Scanner.nextLine();
 	    BufferedReader CSVReader = null;
 
@@ -45,7 +49,7 @@ public class CSVDuplicateEmailRemover
 			CSV CSVInput = null;
 	    	
 	    	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-	    	System.out.println("\r\nChoose the file (.CSV or .TXT). It may appear BEHIND all your tabs!\r\nIgnore any \"Exception while removing reference\" which happens randomly.\n");
+	    	System.out.println("\r\nChoose the file (.CSV or .TXT). The File Explorer may appear BEHIND all your tabs!\r\n");
 	    	int response = chooser.showOpenDialog(null);
 	    	
 	    	if(response == JFileChooser.APPROVE_OPTION)
@@ -63,7 +67,7 @@ public class CSVDuplicateEmailRemover
 				}
 				
 				CSVInput = new CSV(CSVContents);
-				System.out.println("Enter \"d\" for Default Layout (Default is \"ttf\") | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
+				System.out.println("Enter \"d\" for Default Layout (Default is \"" + defaultLayout + "\") | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
 				customOrDefault = Scanner.nextLine();
 			}	
 			catch(Exception e)
@@ -101,8 +105,11 @@ public class CSVDuplicateEmailRemover
 	    
 	    try
 	    {
-			CSVReader.close();
-		    Scanner.close();
+			if(CSVReader != null)
+			{
+	    		CSVReader.close();
+				Scanner.close();
+			}
 	    }
 	    catch(Exception e)
 	    {
@@ -196,9 +203,7 @@ public class CSVDuplicateEmailRemover
 	
 	public static void printDefaultLayout(CSV CSVInput)
 	{
-		System.out.println("\r\nInput CSV:\r\n" + CSVInput.toString(CSVInput.toArrayList(CSVInput.getStringCSV())));
-    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
-	    System.out.print("Removed Values:\r\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()));
+		printCustomLayout(defaultLayout, CSVInput);
 	}
 	
 }
