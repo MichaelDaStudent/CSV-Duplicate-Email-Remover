@@ -31,10 +31,10 @@ public class CSVDuplicateEmailRemover
 			In order to sort by most recent, click once on the icon "Details" in the top right, which has 2 squares and 2 lines.
 			Then click the "Modified" tab twice, until the arror points downwards, indicating a sort by most recent.
 		*/
-			
-		Scanner Scanner = new Scanner(System.in);
+		
+		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter a CSV for Default Layout (Default is \"" + defaultLayout + "\")| \"f\" to select a .CSV or .TXT file | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
-	    String initialInput = Scanner.nextLine();
+	    String initialInput = scanner.nextLine();
 	    BufferedReader CSVReader = null;
 
 	    if(initialInput.toLowerCase().equals("f"))
@@ -49,7 +49,7 @@ public class CSVDuplicateEmailRemover
 			CSV CSVInput = null;
 	    	
 	    	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-	    	System.out.println("\r\nChoose the file (.CSV or .TXT). The File Explorer may appear BEHIND all your tabs!\r\nIgnore any \"Exception while removing reference.\" which happens randomly and is not an error.\r\n");
+	    	System.out.println("\r\nChoose the file (.CSV or .TXT). The File Explorer may appear BEHIND all your tabs!\r\n");
 	    	int response = chooser.showOpenDialog(null);
 	    	
 	    	if(response == JFileChooser.APPROVE_OPTION)
@@ -66,33 +66,25 @@ public class CSVDuplicateEmailRemover
 					CSVContents += fileContents + ",";
 				}
 				
-				CSVInput = new CSV(CSVContents);
-				System.out.println("Enter \"d\" for Default Layout (Default is \"" + defaultLayout + "\") | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
-				customOrDefault = Scanner.nextLine();
+				boolean fail = true;
+				
+				while(fail)
+				{
+					CSVInput = new CSV(CSVContents);
+					fail = !getUserLayout(customOrDefault, CSVInput, scanner);
+				}
+				
 			}	
 			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
-			
-			if(checkIfCustom(customOrDefault))
-			{
-				printCustomLayout(customOrDefault, CSVInput);
-			}
-			else if(customOrDefault.toLowerCase().equals("d"))
-			{
-				printDefaultLayout(CSVInput);
-			}
-			else
-			{
-				System.out.println("Error: Invalid Input");
-			}
-			
+		
 	    }
 	    else if(checkIfCustom(initialInput))
 	    {	
 	    	System.out.println("\nEnter CSV");
-		    CSV CSVInput = new CSV(Scanner.nextLine());
+		    CSV CSVInput = new CSV(scanner.nextLine());
 	    	
 		    printCustomLayout(initialInput, CSVInput);
 	    }
@@ -108,12 +100,12 @@ public class CSVDuplicateEmailRemover
 			if(CSVReader != null)
 			{
 	    		CSVReader.close();
-				Scanner.close();
+				scanner.close();
 			}
 	    }
 	    catch(Exception e)
 	    {
-	    	e.printStackTrace();
+	    	
 	    }
 	    
 	}
@@ -206,4 +198,24 @@ public class CSVDuplicateEmailRemover
 		printCustomLayout(defaultLayout, CSVInput);
 	}
 	
+	public static boolean getUserLayout(String customOrDefault, CSV CSVInput, Scanner scanner) {
+		System.out.println("Enter \"d\" for Default Layout (Default is \"" + defaultLayout + "\") | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
+		customOrDefault = scanner.nextLine();
+		
+		if(checkIfCustom(customOrDefault))
+		{
+			printCustomLayout(customOrDefault, CSVInput);
+		}
+		else if(customOrDefault.toLowerCase().equals("d"))
+		{
+			printDefaultLayout(CSVInput);
+		}
+		else
+		{
+			System.out.println("Error: Invalid Input\r\n");
+			return false;
+		}
+		
+		return true;
+	}
 }
