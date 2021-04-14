@@ -25,7 +25,7 @@ public class CSVDuplicateEmailRemover
 			
 			When entering in "f", a file explorer will open. The default directory is set to downloads.
 			In order to sort by most recent, click once on the icon "Details" in the top right, which has 2 squares and 2 lines.
-			Then click the "Modified" tab twice, until the arror points downwards, indicating a sort by most recent.		
+			Then click the "Modified" tab twice, until the arror points downwards, indicating a sort by most recent.
 		*/
 			
 		Scanner Scanner = new Scanner(System.in);
