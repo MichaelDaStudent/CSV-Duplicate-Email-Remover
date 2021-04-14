@@ -1,4 +1,8 @@
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
+import javax.swing.*;
+
 
 public class CSVDuplicateEmailRemover 
 {
@@ -6,68 +10,195 @@ public class CSVDuplicateEmailRemover
 	{
 		/*
 			How to Use:
-
-			When running CSVDuplicateEmailRemover, you will be prompted to enter "custom" or a CSV.
-			Entering a CSV will produce a CSV with duplicate values removed, and a CSV of the values removed.
-			Entering custom will prompt you to enter in a pair of booleans, one for Show Removed Values and one for Table Format.
-			The default it true,false meaning it WILL Show Removed Values and WILL NOT present in Table Format.
-			Standard format returns a CSV while table format shows each value with a line break in between.
-			Uncommenting line 67 (CSVDuplicateEmailRemover.java:67) will allow the option to return the original CSV in Table Format.
+			
+			When running CSVDuplicateEmailRemover, you will be prompted to enter in a CSV (with standard layout "ttf"),
+			a series of 3 letters in the form of "t" or "f" (for true and false) to create a custom layouts,
+			or a single "f" to be able to input a .CSV file.
+			
+			If you are trying to copy and paste a list-style CSV file (one seperated with line breaks instead of commas),
+			go to https://www.gillmeister-software.com/online-tools/text/remove-line-breaks.aspx and paste in the list-style CSV.
+			Then replace all line breaks with commas "," which you can then copy and paste as normal.
+			
+			A custom layout has the option to turn on and off Show Input CSV, Show Removed Values, and Show in Table Format.
+			To do this, enter in three consecutive letters, with no spaces between, of either t or f (for true and false).
+			The default layout that appears when directly entering in a CSV is "ttf".
+			
+			When entering in "f", a file explorer will open. The default directory is set to downloads.
+			In order to sort by most recent, click once on the icon "Details" in the top right, which has 2 squares and 2 lines.
+			Then click the "Modified" tab twice, until the arror points downwards, indicating a sort by most recent.		
 		*/
+			
+		Scanner Scanner = new Scanner(System.in);
+		System.out.println("Enter a CSV for Default Layout (Default is \"ttf\")| \"f\" to select a .CSV or .TXT file | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
+	    String initialInput = Scanner.nextLine();
+	    BufferedReader CSVReader = null;
 
-		Scanner Scanner = new Scanner(System.in);  // Create a Scanner object
-	    System.out.println("Enter \"custom\" for Custom Layout or a CSV for a Standard Layout:");
-	    String input = Scanner.nextLine();
-	    
-	    if(input.toLowerCase().equals("custom"))
+	    if(initialInput.toLowerCase().equals("f"))
 	    {
-	    	System.out.println("Enter \"[boolean],[boolean]\" for Show Removed Values and Table Format (Default is \"true,false\") respectively:");
-	    	input = Scanner.nextLine();
-		    CSV CSVInput = null;
-
-		    if(input.toLowerCase().equals("true,false") || (input.toLowerCase().equals("true,true")) || (input.toLowerCase().equals("false,false")) || (input.toLowerCase().equals("false,true")))
-		    {
-			    System.out.println("Enter CSV");
-			    CSVInput = new CSV(Scanner.nextLine());
-		    }
-	    
-		    else
-		    {
-		    	System.out.println("Make sure there is no space between \"[boolean],[boolean]\"!");
-		    }
-		    
-		    if(input.toLowerCase().equals("true,false"))
-		    {
-		    	System.out.println("\nDuplicate-Free CSV: " + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
-				System.out.println("Removed Values: " + CSVInput.toString(CSVInput.getRemovedValuesArrayList()));
-		    }
-		    
-		    else if(input.toLowerCase().equals("true,true"))
-		    {
-		    	System.out.println("\nDuplicate-Free CSV:\n" + CSVInput.toReadableString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
-			    System.out.print("Removed Values:\n" + CSVInput.toReadableString(CSVInput.getRemovedValuesArrayList()));
-		    }
-		    
-		    else if(input.toLowerCase().equals("false,false"))
-		    {
-		    	System.out.println("\nDuplicate-Free CSV: " + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
-		    }
-		    
-		    else if(input.toLowerCase().equals("false,true"))
-		    {
-		    	System.out.println("\nDuplicate-Free CSV:\n" + CSVInput.toReadableString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
-
-		    }
-		    
+	    	File file = null;
+	    	String pathToDownloads = Paths.get(System.getProperty("user.home"), "Downloads").toString();
+	    	JFileChooser chooser = new JFileChooser(pathToDownloads);
+	    	String customOrDefault = "";
+	    	
+			String fileContents = "";
+			String CSVContents = "";
+			CSV CSVInput = null;
+	    	
+	    	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+	    	System.out.println("\r\nChoose the file (.CSV or .TXT). It may appear BEHIND all your tabs!\r\nIgnore any \"Exception while removing reference\" which happens randomly.\n");
+	    	int response = chooser.showOpenDialog(null);
+	    	
+	    	if(response == JFileChooser.APPROVE_OPTION)
+	    	{
+	    		file = chooser.getSelectedFile();
+	    	}
+			
+			try
+			{
+				CSVReader = new BufferedReader(new FileReader(file));
+				
+				while((fileContents = CSVReader.readLine()) != null)
+				{
+					CSVContents += fileContents + ",";
+				}
+				
+				CSVInput = new CSV(CSVContents);
+				System.out.println("Enter \"d\" for Default Layout (Default is \"ttf\") | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
+				customOrDefault = Scanner.nextLine();
+			}	
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+			if(checkIfCustom(customOrDefault))
+			{
+				printCustomLayout(customOrDefault, CSVInput);
+			}
+			else if(customOrDefault.toLowerCase().equals("d"))
+			{
+				printDefaultLayout(CSVInput);
+			}
+			else
+			{
+				System.out.println("Error: Invalid Input");
+			}
+			
+	    }
+	    else if(checkIfCustom(initialInput))
+	    {	
+	    	System.out.println("\nEnter CSV");
+		    CSV CSVInput = new CSV(Scanner.nextLine());
+	    	
+		    printCustomLayout(initialInput, CSVInput);
 	    }
 	    else
 	    {
-	    	CSV CSVInput = new CSV(input);
-	    	// Uncomment for table with original values: System.out.println("Original Values:\n" + CSVInput.toReadableString(CSVInput.toArrayList(CSVInput.getStringCSV())));
-	    	System.out.println("Duplicate-Free CSV:\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\n");
-			System.out.println("Removed Values:\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()) + "\n");
-	    }	
+	    	CSV CSVInput = new CSV(initialInput);
+	    	
+	    	printDefaultLayout(CSVInput);
+	    }
 	    
-	    Scanner.close();
+	    try
+	    {
+			CSVReader.close();
+		    Scanner.close();
+	    }
+	    catch(Exception e)
+	    {
+	    	e.printStackTrace();
+	    }
+	    
 	}
+	
+	public static boolean checkIfCustom(String initialInput)
+	{
+		return
+		(
+			initialInput.toLowerCase().equals("ttt") ||
+	    	initialInput.toLowerCase().equals("ftt") ||
+	    	initialInput.toLowerCase().equals("fft") ||
+	    	initialInput.toLowerCase().equals("fff") ||
+	    	initialInput.toLowerCase().equals("ttf") ||
+	    	initialInput.toLowerCase().equals("tff") ||
+	    	initialInput.toLowerCase().equals("tft") ||
+	    	initialInput.toLowerCase().equals("ftf")
+	    );
+	}
+	
+	public static void printCustomLayout(String initialInput, CSV CSVInput)
+	{
+		// Show: Input CSV, Duplicate-Free CSV, and Removed Values
+	    // Format: Table
+	    if(initialInput.toLowerCase().equals("ttt"))
+	    {
+	    	System.out.println("\r\nInput CSV:\r\n" + CSVInput.toReadableString(CSVInput.toArrayList(CSVInput.getStringCSV())));
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toReadableString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+		    System.out.print("Removed Values:\r\n" + CSVInput.toReadableString(CSVInput.getRemovedValuesArrayList()));
+	    }
+	    
+	    // Show: Duplicate-Free CSV, and Removed Values
+	    // Format: Table
+	    else if(initialInput.toLowerCase().equals("ftt"))
+	    {
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+		    System.out.print("Removed Values:\r\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()));
+	    }
+	    
+	    // Show: Duplicate-Free CSV
+	    // Format: Table
+	    else if(initialInput.toLowerCase().equals("fft"))
+	    {
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toReadableString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+	    }
+	    
+	    // Show: Duplicate-Free CSV
+	    // Format: CSV
+	    else if(initialInput.toLowerCase().equals("fff"))
+	    {
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+	    }
+	    
+	    // Show: Input CSV, Duplicate-Free CSV, and Removed Values
+	    // Format: CSV
+	    else if(initialInput.toLowerCase().equals("ttf"))
+	    {
+	    	System.out.println("\r\nInput CSV:\r\n" + CSVInput.toString(CSVInput.toArrayList(CSVInput.getStringCSV())));
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+		    System.out.print("Removed Values:\r\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()));
+	    }
+	    
+	    // Show: Input CSV, Duplicate-Free CSV
+	    // Format: CSV
+	    else if(initialInput.toLowerCase().equals("tff"))
+	    {
+	    	System.out.println("\r\nInput CSV:\r\n" + CSVInput.toString(CSVInput.toArrayList(CSVInput.getStringCSV())));
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+	    }
+	    
+	    // Show: Input CSV, Duplicate-Free CSV
+	    // Format: Table
+	    else if(initialInput.toLowerCase().equals("tft"))
+	    {
+	    	System.out.println("\r\nInput CSV:\r\n" + CSVInput.toReadableString(CSVInput.toArrayList(CSVInput.getStringCSV())));
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toReadableString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+	    }
+	    
+	    // Show: Duplicate-Free CSV, and Removed Values
+	    // Format: CSV
+	    else if(initialInput.toLowerCase().equals("ftf"))
+	    {
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+		    System.out.print("Removed Values:\r\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()));
+	    }
+	    
+	}
+	
+	public static void printDefaultLayout(CSV CSVInput)
+	{
+		System.out.println("\r\nInput CSV:\r\n" + CSVInput.toString(CSVInput.toArrayList(CSVInput.getStringCSV())));
+    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+	    System.out.print("Removed Values:\r\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()));
+	}
+	
 }

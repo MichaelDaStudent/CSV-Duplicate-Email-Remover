@@ -80,7 +80,7 @@ public class CSV
 		{
 			if(i < arr.size() - 1)
 			{
-				string += arr.get(i) + "\n";
+				string += arr.get(i) + "\r\n";
 			}
 			else
 			{
@@ -96,8 +96,8 @@ public class CSV
 	{
 		String CSV
 		=
-			"Original CSV: " + StringCSV + "\n" +
-			"No Duplicate CSV: " + this.toString(removedValuesArrayListCSV) + "\n" +
+			"Original CSV: " + StringCSV + "\r\n" +
+			"No Duplicate CSV: " + this.toString(removedValuesArrayListCSV) + "\r\n" +
 			"Removed Values: " + this.toString(removedValuesArrayList)
 		;
 		
