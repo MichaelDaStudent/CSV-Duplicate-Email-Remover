@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class CSVDuplicateEmailRemover 
 {
-    static String defaultLayout = "ttt";
+    static String defaultLayout = "ttf";
     
 	public static void main(String[] args)
 	{
@@ -49,7 +49,7 @@ public class CSVDuplicateEmailRemover
 			CSV CSVInput = null;
 	    	
 	    	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-	    	System.out.println("\r\nChoose the file (.CSV or .TXT). The File Explorer may appear BEHIND all your tabs!\r\n");
+	    	System.out.println("\r\nChoose the file (.CSV or .TXT). The File Explorer may appear BEHIND all your tabs!\r\nIgnore any \"Exception while removing reference.\" which happens randomly and is not an error.\r\n");
 	    	int response = chooser.showOpenDialog(null);
 	    	
 	    	if(response == JFileChooser.APPROVE_OPTION)
@@ -148,8 +148,8 @@ public class CSVDuplicateEmailRemover
 	    // Format: Table
 	    else if(initialInput.toLowerCase().equals("ftt"))
 	    {
-	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
-		    System.out.print("Removed Values:\r\n" + CSVInput.toString(CSVInput.getRemovedValuesArrayList()));
+	    	System.out.println("\r\nDuplicate-Free CSV:\r\n" + CSVInput.toReadableString(CSVInput.removeDuplicateValues(CSVInput.toArrayList(CSVInput.getStringCSV()))) + "\r\n");
+		    System.out.print("Removed Values:\r\n" + CSVInput.toReadableString(CSVInput.getRemovedValuesArrayList()));
 	    }
 	    
 	    // Show: Duplicate-Free CSV
