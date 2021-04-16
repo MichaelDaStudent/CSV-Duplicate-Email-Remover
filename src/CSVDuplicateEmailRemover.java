@@ -6,32 +6,31 @@ import javax.swing.*;
 
 public class CSVDuplicateEmailRemover 
 {
+	// How to Use
+	/*
+		When running CSVDuplicateEmailRemover, you will be prompted to enter in a CSV (with the default layout),
+		a series of 3 letters in the form of "t" or "f" (for true and false) to create a custom layouts,
+		or a single "f" to be able to input a .CSV file.
+		
+		The default layout can be changed with the variable "defaultLayout".
+		
+		If you are trying to copy and paste a list-style CSV file (one seperated with line breaks instead of commas),
+		go to https://www.gillmeister-software.com/online-tools/text/remove-line-breaks.aspx and paste in the list-style CSV.
+		Then replace all line breaks with commas "," which you can then copy and paste as normal.
+		
+		A custom layout has the option to turn on and off Show Input CSV, Show Removed Values, and Show in Table Format.
+		To do this, enter in three consecutive letters, with no spaces between, of either t or f (for true and false).
+		The default layout that appears when directly entering in a CSV is set through the variable defaultLayout.
+		
+		When entering in "f", a file explorer will open. The default directory is set to downloads.
+		In order to sort by most recent, click once on the icon "Details" in the top right, which has 2 squares and 2 lines.
+		Then click the "Modified" tab twice, until the arror points downwards, indicating a sort by most recent.
+	*/
+	
     static String defaultLayout = "ttf";
     
 	public static void main(String[] args)
-	{
-		/*
-			How to Use:
-			
-			When running CSVDuplicateEmailRemover, you will be prompted to enter in a CSV (with the default layout),
-			a series of 3 letters in the form of "t" or "f" (for true and false) to create a custom layouts,
-			or a single "f" to be able to input a .CSV file.
-			
-			The default layout can be changed with the variable "defaultLayout".
-			
-			If you are trying to copy and paste a list-style CSV file (one seperated with line breaks instead of commas),
-			go to https://www.gillmeister-software.com/online-tools/text/remove-line-breaks.aspx and paste in the list-style CSV.
-			Then replace all line breaks with commas "," which you can then copy and paste as normal.
-			
-			A custom layout has the option to turn on and off Show Input CSV, Show Removed Values, and Show in Table Format.
-			To do this, enter in three consecutive letters, with no spaces between, of either t or f (for true and false).
-			The default layout that appears when directly entering in a CSV is set through the variable defaultLayout.
-			
-			When entering in "f", a file explorer will open. The default directory is set to downloads.
-			In order to sort by most recent, click once on the icon "Details" in the top right, which has 2 squares and 2 lines.
-			Then click the "Modified" tab twice, until the arror points downwards, indicating a sort by most recent.
-		*/
-		
+	{	
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter a CSV for Default Layout (Default is \"" + defaultLayout + "\")| \"f\" to select a .CSV or .TXT file | or \"[t/f][t/f][t/f]\"\r\nfor custom layout settings: \"[Show Input CSV][Show Removed Values][Show in Table Format]\"");
 	    String initialInput = scanner.nextLine();
