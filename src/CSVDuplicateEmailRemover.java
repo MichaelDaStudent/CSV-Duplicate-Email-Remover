@@ -27,7 +27,7 @@ public class CSVDuplicateEmailRemover
 		Then click the "Modified" tab twice, until the arror points downwards, indicating a sort by most recent.
 	*/
 	
-    static String defaultLayout = "ttf";
+    static String defaultLayout = "fft";
     
 	public static void main(String[] args)
 	{	
